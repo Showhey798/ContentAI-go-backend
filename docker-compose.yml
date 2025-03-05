@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: contentai-backend
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    volumes:
+      - .:/app
+      - go-modules:/go/pkg/mod
+    environment:
+      - APP_ENV=development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=contentai
+    depends_on:
+      - db
+    networks:
+      - contentai-network
+    command: ["go", "run", "./cmd/api"]
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: contentai-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=contentai
+    ports:
+      - "5432:5432"
+    networks:
+      - contentai-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: contentai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - contentai-network
+    restart: unless-stopped
+
+  # gRPC UI用コンテナ（オプション）
+  grpcui:
+    image: fullstorydev/grpcui:latest
+    container_name: contentai-grpcui
+    ports:
+      - "8082:8080"
+    environment:
+      - GRPCUI_SERVER=app:50051
+    depends_on:
+      - app
+    networks:
+      - contentai-network
+    command: "-plaintext -port 8080 app:50051"
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
+  go-modules:
+
+networks:
+  contentai-network:
+    driver: bridge

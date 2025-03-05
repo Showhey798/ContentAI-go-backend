@@ -2,7 +2,7 @@ name: Go Lint
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, master, develop, feature/* ]
   pull_request:
     branches: [ main, master, develop ]
 
@@ -10,9 +10,6 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
@@ -25,4 +22,3 @@ jobs:
         with:
           version: latest
           args: --timeout=5m --verbose
-          working-directory: .

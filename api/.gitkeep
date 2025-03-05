@@ -1,0 +1,11 @@
+# API定義
+
+このディレクトリには、APIのプロトコル定義ファイルを配置します。
+
+ここには以下のものが含まれます：
+- Protocol Buffers（.proto）ファイル: gRPC用の型定義とサービスインターフェース
+- OpenAPI/Swagger仕様: REST API用の定義
+- GraphQLスキーマ
+
+これらの定義ファイルからクライアントとサーバーのコードが自動生成されます。
+生成されたコードは `internal/interface/grpc` や `pkg/grpc` などに保存されます。
