@@ -2,7 +2,7 @@ name: Go Tests
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, master, develop, feature/* ]
   pull_request:
     branches: [ main, master, develop ]
 
@@ -10,9 +10,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
     steps:
       - name: Set up Go
         uses: actions/setup-go@v4
